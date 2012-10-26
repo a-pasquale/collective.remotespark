@@ -1,0 +1,188 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="collective.remotespark">
+<head>
+    <metal:block fill-slot="style_slot">
+        <link rel="stylesheet"
+              tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+              tal:attributes="href string:${navroot}/++resource++collective.remotespark/hi5.css"
+              />
+        <link rel="stylesheet"
+              tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+              tal:attributes="href string:${navroot}/++resource++collective.remotespark/rdp.css"
+              />
+<style type="text/css">
+.container {
+	background-color: #EEE;
+	border-radius: 10px;
+	box-shadow: 2px 2px 10px #888;
+	padding: 2em;
+	margin-top: 2em;
+}
+
+.icon {
+	display: inline-block;
+	text-align: center;
+	padding: 1.5em;
+}
+
+.icon:hover{
+	background:#CCC;
+}
+</style>
+    </metal:block>
+
+    <metal:block fill-slot="javascript_head_slot">
+        <script type="text/javascript" 
+              tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+              tal:attributes="src string:${navroot}/++resource++collective.remotespark/resource.js"></script>
+        <script type="text/javascript" 
+              tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+              tal:attributes="src string:${navroot}/++resource++collective.remotespark/hi5_min.js"></script>
+        <script type="text/javascript" 
+              tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+              tal:attributes="src string:${navroot}/++resource++collective.remotespark/surface_min.js"></script>
+        <script type="text/javascript" 
+              tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+              tal:attributes="src string:${navroot}/++resource++collective.remotespark/rdp_min.js"></script>
+    </metal:block>
+</head>
+<body>
+    <div metal:fill-slot="main">
+        <tal:main-macro metal:define-macro="main"
+                        tal:define="testview view/test">
+
+  <!--[if IE]>
+    <script type="text/javascript" 
+     src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+
+    <style>
+     .chromeFrameInstallDefaultStyle {
+       width: 70%; 
+       border: 5px solid blue;
+     }
+    </style>
+
+    <script>
+     // The conditional ensures that this code will only execute in IE,
+     // Therefore we can use the IE-specific attachEvent without worry
+     window.attachEvent("onload", function() {
+       CFInstall.check({
+       mode: "overlay"
+       });
+     });
+    </script>
+  <![endif]-->
+  
+<script type="text/javascript"> 
+  window.$id = function (id){
+	return document.getElementById(id);
+  };
+
+  function checkBrowser(){
+	var hasCanvas = false;
+	var msg = "";
+	try { 
+		document.createElement("canvas").getContext("2d");
+		hasCanvas = true;
+	} catch (e) {
+		msg = "This browser does not support Canvas.\n\n";
+	};
+	
+	var noWebSocket = !("WebSocket" in window) && !("MozWebSocket" in window);
+	var userAgent = navigator.userAgent;
+	var isFirefox = userAgent.indexOf("Firefox") != -1;
+		
+	if (noWebSocket){
+		msg += "This browser doesn't support WebSocket.\n\n";
+		if (isFirefox){
+			msg += "Please update to Firefox 6 or later.\n\n";
+		}
+		else if (userAgent.indexOf("Opera") != -1){
+			msg += "Please open 'opera:config#Enable WebSockets' (type it in the link field) make 'Enable WebSockets' selected and restart Opera.\n\n";
+		}
+		else if (userAgent.indexOf("MSIE") != -1){
+			msg += "Please install Google Chrome Frame.\n\n";
+		}
+	}
+	
+	if (msg.length > 0)
+		alert(msg);
+	
+	var ready = !noWebSocket && hasCanvas;
+	
+	return ready;
+};
+
+function initUI(){
+	var gateway = $id("gateway");
+	var h =  gateway.value;
+	if (h.length > 0) return;
+	h = window.location.host;
+	if (h.length == 0)
+		h = "localhost";
+	gateway.value = h;
+	checkBrowser();
+}
+
+function start(){
+	var es = $id("frmLogin").elements;
+	var gw = es["gateway"].value;
+	var user = es["user"].value;
+	var pwd = es["pwd"].value;
+	var p = ("https:" == location.protocol) ? "wss://" : "ws://";
+	var addr = p + gw + "/LOGIN?" + "user=" + encodeURIComponent(user) + "&pwd="+encodeURIComponent(pwd);
+	return login(addr);
+}
+	
+window.addEventListener('load', initUI, false);
+
+</script> 
+
+	<div id="login">
+		<form id="frmLogin" onsubmit="return start()">
+			<table align="center"
+				class="container">
+				<tr>
+					<td colspan="2" align="center"><h3>Spark View <span class="ver">1</span></h3>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">Spark Gateway:</td>
+					<td><input type="text" name="gateway" id="gateway" required/>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">Domain\user name:</td>
+					<td><input type="text" name="user" id="user" required/>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">Password:</td>
+					<td><input type="password" name="pwd" required/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right"><input type="submit" name="usrlogin"
+						value="Sign in" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		<div class="container" id="frmConn"  style="display:none">
+		<div><strong>My Computers and Programs:&nbsp;&nbsp;&nbsp;</strong>
+			<input type="button" name="showlogin" value="Back" onclick="showLogDlg();"/>
+			<input type="button" name="anyconn" id="anyconn" value="Remote Desktop" onclick="openDesktop();"/>
+		</div>
+			<div id="programs"></div>
+			<div>Copyright &copy; Remote Spark Corp. 2011 <a href="http://www.remotespark.com" target="_blank">www.remotespark.com</a></div>
+		</div>
+	</div>
+            <span tal:content="testview/dummy">test</span>
+            hello
+
+        </tal:main-macro>
+    </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.remotespark">
+    <!-- -*- extra stuff goes here -*- -->
+
+  <browser:page
+      for="*"
+      name="rdp_view"
+      class=".rdpview.rdpView"
+      template="rdpview.pt"
+      allowed_interface=".rdpview.IrdpView"
+      permission="zope.Public"
+      />
+
+
+  <browser:page
+      for="*"
+      name="remotespark_view"
+      class=".remotesparkview.RemoteSparkView"
+      template="remotesparkview.pt"
+      permission="zope.Public"
+      />
+
+</configure>

@@ -1,0 +1,41 @@
+#login {
+    width: 350px;
+    margin: 100px auto;
+    padding-right: 3px;
+    background: #fff;
+    border-radius: 10px;
+    border: 4px solid #0c7fd3; 
+    box-shadow: 0px 0px 10px rgba(0,0,0,.9); 
+    text-align: center;
+}
+
+#login input[name="server"] {
+    display: inline;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 150px;
+    margin-top:4px;
+}
+
+#login .nav-tabs li {
+    display: inline;
+    margin-bottom: -1px;
+}
+
+#login .nav-tabs {
+    margin-left: 0;
+    padding-left: 15px;
+}
+#login .nav-tabs li a {
+    display: block;
+    border-bottom: 0;
+}
+#login img {
+    border:0;
+}
+#login label { 
+    display: inline;
+}
+#login .modal {
+    text-align: left;
+}
