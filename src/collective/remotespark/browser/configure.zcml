@@ -10,7 +10,7 @@
       class=".rdpview.rdpView"
       template="rdpview.pt"
       allowed_interface=".rdpview.IrdpView"
-      permission="zope.Public"
+      permission="zope2.View"
       />
 
 
