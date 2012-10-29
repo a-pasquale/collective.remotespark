@@ -68,6 +68,25 @@
 <script type="text/javascript">
 $('#rdp_options').modal();
 
+<!-- Hide the navbar unless mouse enters the personal bar. -->
+var hideHeader = function () {
+    $('.navbar-fixed-top').css({position:'absolute'});
+    $('#personal-bar').css({position:'absolute'});
+    $('#header').css({top:-60,position:'fixed',width:'100%'});
+    $('#header').bind('mouseenter', function () {
+        $(this)
+            .css({top:-60,position:'fixed'})
+            .animate({top:0})
+        });
+
+    $('#header').bind('mouseleave', function () {
+        $(this)
+            .css({top:0,position:'fixed'})
+            .animate({top:-60});
+        });
+};
+
+
 window.$id = function (id){
     return document.getElementById(id);
 };
@@ -357,7 +376,7 @@ function serverListCallback(hasNew, connected){
 
 	<div id="login">
 		<h2>Cloud Login</h2>
-		<form id="frmConn" onsubmit="connectRDP(); return false;">
+		<form id="frmConn" onsubmit="hideHeader(); connectRDP(); return false;">
             <div>
                 <input type="hidden" name="id" />
                 <input type="text" name="server" id="server" required class="Hi5Select" value="Select your cloud:"/>
