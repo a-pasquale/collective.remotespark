@@ -265,7 +265,8 @@ function useFullScreen(){
 
 function useFullBrowser(){
 	$id("width").value = window.innerWidth;
-	$id("height").value = window.innerHeight;
+    // Make the canvas 26px shorter so the personalbar fits.
+	$id("height").value = window.innerHeight - 26;
 };
 
 function registerRdp(){
