@@ -382,7 +382,9 @@ function serverListCallback(hasNew, connected){
 		<form id="frmConn" onsubmit="hideHeader(); connectRDP(); return false;">
             <div>
                 <input type="hidden" name="id" />
-                <input type="text" name="server" id="server" required class="Hi5Select" value="Select your cloud:"/>
+                <label>Select your cloud:</label>
+                <div class="clearfix"></div>
+                <input type="text" name="server" id="server" required class="Hi5Select" />
             </div>
             <div>
                 <input type="submit" name="connect" value="Connect" class="btn btn-primary"/>
