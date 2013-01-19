@@ -395,7 +395,7 @@ function serverListCallback(hasNew, connected){
                 </a>
             </div>
             <div class="clear-fix">&nbsp;</div>
-			<div class="hide modal" id="rdp_tabs">
+			<div class="hide fade modal" id="rdp_tabs">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h3>RDP Configuration Options</h3>
