@@ -5,7 +5,7 @@ var __svi18n = {
 		logError: "The logon process failed.",
 		remoteApp: {
 			warn: "Warning: This is the parent window of following RemoteApps:",
-			close: "Please quit the applicaiton from application's File menu."
+			close: "Please quit the application from application's File menu."
 		},
 		info:{
 			"closed": "Connection was closed!",
@@ -20,7 +20,8 @@ var __svi18n = {
 			"nocontrol": "Your don't have control any more.",
 			"title": "%1 %2 @ %3",//title of request contrl, %1 user name, %2 number ID, %2 host name
 			"recontrol": "Requesting control",
-			"touchremoting": "Touch remoting is enabled"
+			"touchremoting": "Touch remoting is enabled",
+			"printready": "Your document is ready."
 		},
 		errorCode: {
 			"1": "The disconnection was initiated by an administrative tool on the server in another session.",
@@ -45,7 +46,7 @@ var __svi18n = {
 			"108": "A licensing message was incorrectly encrypted.",
 			"109": "The Client Access License stored by the client could not be upgraded or renewed.",
 			"10A": "The remote computer is not licensed to accept remote connections",
-			"connection": "Failed to connect to Gateway!",
+			"connection": "Failed to connect to Gateway!  Please ensure you are connected to the VPN.",
 			//error code from server
 			"S0": "New RemoteApp or desktop found. Please refresh your list.",
 			"S1": "License expired.",
@@ -112,6 +113,13 @@ var __svi18n = {
 							</tr>\
 						</tbody>\
 						</table>',
+			"login": 'Enter your credentials:<br>\
+				<form id= "frmLogin">\
+				<input type="text" placeholder="User name" id="loginUser"><br>\
+				<input type="password" placeholder="Passoword" id="loginPassword"><br>\
+				Domain: <span id="loginDomain"></span>\
+				<input type="submit" id="loginConnect">\
+				</form>',
 			"loaded": false,
 			"init": function(){
 				var fc = document.getElementById("filecontainer");
