@@ -541,7 +541,6 @@ function initServers(){
 			if (!h) h = "localhost";
 		}
 		gw.value = h;
-        console.log('gw.value: '+ gw.value);
 	}
 
 	var server = $id("server");
@@ -594,9 +593,7 @@ function initServers(){
     //syncronize computers with gateway, 
     //remove following two lines and serverListCallback if you dont want to do so.
 	var addr = (("https:" == location.protocol) ?  "wss://" : "ws://") + gw.value + "/LIST";
-    console.log('addr:' + addr);
 	getServers(addr, serverListCallback);
-    console.log('addr:' + addr);
 
 }
 
@@ -669,7 +666,6 @@ function connectRDP(){
 	var frmConn = $id("frmConn");
 	var r = svManager.getInstance(); 
 	if (r == null){
-        console.log('gw'+ gw);
 		r = new svGlobal.Rdp(protocol + gw + "/RDP?" + s, w, h, server_bpp);
 	}else{
 		var apps = r.getRunninApps();
