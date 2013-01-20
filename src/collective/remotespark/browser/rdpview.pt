@@ -14,29 +14,16 @@
         <link rel="stylesheet"
               tal:attributes="href string:${navroot}/++resource++collective.remotespark/custom.css"/>
     </metal:block>
-    <metal:block fill-slot="javascript_head_slot"
+    <metal:block fill-slot="javascript_head_slot" 
                  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
-        <script type="text/javascript" 
-              tal:attributes="src string:${navroot}/++resource++collective.remotespark/resource.js"
-              ></script>
-        <script type="text/javascript" 
-              tal:attributes="src string:${navroot}/++resource++collective.remotespark/hi5_min.js"
-              ></script>
-        <script type="text/javascript" 
-              tal:attributes="src string:${navroot}/++resource++collective.remotespark/surface_min.js"
-              ></script>
-        <script type="text/javascript" 
-              tal:attributes="src string:${navroot}/++resource++collective.remotespark/rdp_min.js"
-              ></script>
-        <script type="text/javascript" 
-              tal:attributes="src string:${navroot}/++resource++collective.remotespark/login_min.js"
-              ></script>
+        <script tal:attributes="src string:${navroot}/++resource++collective.remotespark/hi5_min.js"></script>
     </metal:block>
 </head>
 <body>
 
     <div metal:fill-slot="main">
         <tal:main-macro metal:define-macro="main">
+
   <!--[if IE]>
     <script type="text/javascript" 
      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
@@ -65,321 +52,9 @@
 
 
 <!-- following is for login dialog only -->
-<script type="text/javascript">
-$('#rdp_options').modal();
-
-<!-- Hide the navbar unless mouse enters the personal bar. -->
-var hideHeader = function () {
-    $('.navbar-fixed-top').css({position:'absolute'});
-    $('#personal-bar').css({position:'absolute'});
-    $('#header').css({top:-60,position:'fixed',width:'100%'});
-    $('#header').bind('mouseenter', function () {
-        $(this)
-            .css({top:-60,position:'fixed'})
-            .animate({top:0})
-        $("#wsinput").hide();
-    });
-
-    $('#header').bind('mouseleave', function () {
-        $(this)
-            .css({top:0,position:'fixed'})
-            .animate({top:-60});
-        $('#wsinput').show();
-    });
-};
-
-
-window.$id = function (id){
-    return document.getElementById(id);
-};
-
-function checkBrowser(){
-	var hasCanvas = false;
-	var msg = "";
-	try { 
-		document.createElement("canvas").getContext("2d");
-		hasCanvas = true;
-	} catch (e) {
-		msg = "This browser does not support Canvas.\n\n";
-	};
-	
-	
-	var noWebSocket = !("WebSocket" in window) && !("MozWebSocket" in window);
-	var userAgent = navigator.userAgent;
-	var isFirefox = userAgent.indexOf("Firefox") != -1;
-		
-	if (noWebSocket){
-		msg += "This browser doesn't support WebSocket.\n\n";
-		if (isFirefox){
-			msg += "Please update to Firefox 6 or later.\n\n";
-		}
-		else if (userAgent.indexOf("Opera") != -1){
-			msg += "Please open 'opera:config#Enable WebSockets' (type it in the link field) make 'Enable WebSockets' selected and restart Opera.\n\n";
-		}
-		else if (userAgent.indexOf("MSIE") != -1){
-			msg += "Please install Google Chrome Frame.\n\n";
-		}
-	}
-	
-	if (msg.length > 0)
-		alert(msg);
-	
-	var ready = !noWebSocket && hasCanvas;
-	
-	return ready;
-};
-
-function initTimezone(){
-	var off = new Date().getStdTimezoneOffset()
-	var h = (off / 60) >> 0;
-	var zone, m = off - h * 60;
-	
-	if (h == 0){
-		zone = "(GMT)";
-	}else{
-		zone = (h < 0) ? "(GMT+" : "(GMT-";
-		h = Math.abs(h);
-		if (h < 10){
-			zone += "0";
-		}
-		zone += (h + ":" + m);
-	}
-	var tzSelect = $id("timezone");
-	var ops = tzSelect.options;
-	h = ops.length;
-	for (var i = 0; i < h; i++){
-		if (ops[i].text.indexOf(zone) == 0){
-			tzSelect.selectedIndex = i;
-			break;
-		}
-	}
-}
-
-function initUI(){
-	checkBrowser();
-	if (hi5.browser.isTouch){
-		$id("touchrow").style.display = "table-row";
-	}
-	svGlobal.util.initDragDrop($id("dropZone"), $id("frmConn"));
-	useFullBrowser();
-	initTimezone();
-	initServers();
-	var info = $id("joinSelect");
-	if (info){
-		info.onchange = function(e){
-			svManager.getInstance().setJoinMode(e.target.value);
-		};
-	}
-	
-	var control =$id("requestControl");
-	if (control){
-		control.onclick = function(e){
-			svManager.getInstance().requestControl();
-		};
-	}
-}
-	
-window.addEventListener('load', initUI, false);
-
-function initServers(){
-	var gw = $id("gateway"); 
-	var h = gw.value;
-	if (!h){
-		h = hi5.tool.queryToObj().gateway;//gateway value in the url
-		if (!h){
-			h = window.location.host;
-            h = "10.1.100.133"
-			if (!h) h = "localhost";
-		}
-		gw.value = h;
-	}
-
-	var server = $id("server");
-	
-	var save = $id("save");
-	var clear = $id("clear");
-	var remove = $id("delete");
-	
-	if (!Connection.hasStorage){
-		save.style.visibility="hidden";
-		clear.style.visibility="hidden";
-		remove.style.visibility="hidden";
-		return;
-	}
-	
-	loadServers().onchange = function(){
-		var key = server.value;
-		Connection.loadToForm($id("frmConn"), key);
-	};
-	
-	save.onclick = function(){
-		if (server.value.length < 1){
-			alert("Please enter computer name.");
-			return null;
-		}
-
-		var key =Connection.saveForm($id("frmConn"));
-		loadServers();
-	};
-
-	clear.onclick = function(){
-		if (confirm("All saved data will be removed?")){
-			Connection.clear();
-			loadServers();
-			server.value = "";
-		}
-	};
-	
-	remove.onclick = function(){
-		var key = $id("server").value;
-		if (key.length < 1){
-			alert("Please select a computer first.");
-			return;
-		}
-		Connection.remove(key);
-		loadServers();
-		server.value = "";
-	}
-	
-	//syncronize computers with gateway, remove following two lines and serverListCallback if you don't want to do so.
-	var addr = (("https:" == location.protocol) ?  "wss://" : "ws://") + gw.value + "/LIST";
-	getServers(addr, serverListCallback);
-
-}
-
-function loadServers(){
-	var svrs = Connection.getAll();
-	var srvs = $id("server");
-	var ops = $id("server").options;
-	ops.length = 0;
-	for (var i = 0, l = svrs.length; i < l; i++){
-		ops[i] = new Option(svrs[i]);		
-	}
-	return srvs;	
-}
-
-function useFullScreen(){
-	$id("width").value = screen.width;
-	$id("height").value = screen.height;
-};
-
-function useFullBrowser(){
-	$id("width").value = window.innerWidth;
-    // Make the canvas 26px shorter so the personalbar fits.
-	$id("height").value = window.innerHeight - 26;
-};
-
-function registerRdp(){
-	if ("registerProtocolHandler" in navigator){
-		navigator.registerProtocolHandler("web+rdp", location.protocol +"//" + location.host + "/rdpdirect.html?%s", "Spark View");
-	}
-	else{
-		alert("Sorry, your browser doesn't support this.");
-	}
-}
-
-function connectRDP(){
-	$id("server").hide();
-	var frms = $id("frmConn").elements;
-	var l = frms.length;
-	var s = "";
-	var gw;
-	var w = window.innerWidth, h = window.innerHeight, server_bpp = 16;
-	for (var i = 0; i < l; i++){
-		var field = frms[i];
-		if ((field.type=="radio" || field.type=="checkbox") && !field.checked) continue;
-		var v = field.value;
-		if (v == "")continue;
-		var n = field.name;
-		if (n == "gateway"){
-			gw = v;
-			continue;
-		}
-		else if (n == "width"){
-			w = v;
-			continue;
-		}
-		else if (n == "height"){
-			h = v;
-			continue;
-		}
-		else if (n == "server_bpp"){
-			server_bpp = v;
-			continue;
-		}
-		
-		if (s != "") s += "&";
-		s += (n + "=" + encodeURIComponent(v));
-	}
-	
-	var protocol = ("https:" == location.protocol) ? "wss://" : "ws://";
-	var frmConn = $id("frmConn");
-	var r = svManager.getInstance(); 
-	if (r == null){
-		r = new svGlobal.Rdp(protocol + gw + "/RDP?" + s, w, h, server_bpp);
-	}else{
-		var apps = r.getRunninApps();
-		var len = apps.length;
-		var isApp = $id("app").checked;
-		var warn = r.isRemoteApp() && (!isApp); 
-		if (warn){
-			var s = "Warning: A RemoteApp session is still active.\n\n";
-			for (var i = 0; i < len; i++){
-				s += apps[i] + "\n";
-			}
-			s += "\nPlease open a new Window for new sessions.\n";
-			alert(s);
-			return;
-		}
-	}
-	
-	var newWin = r.isRemoteApp() && svGlobal.isMultitask;//open in new window
-	if (newWin){
-		function onSurfaceReady(surface){
-			r.addSurface(surface);
-			console.log("remoteApp: " + frmConn["exe"].value + " arg=" + frmConn["args"].value);
-			if (r.running())
-				r.startApp(frmConn["exe"].value, frmConn["args"].value, "");
-		};
-		window.svOnSurfaceReady = onSurfaceReady;
-		var rail = window.open("rail.html");
-		rail.svOnSurfaceReady = onSurfaceReady;
-	}else{
-		$id("login").style.display = "none";
-		r.onclose = function(){
-			r.hide();
-			$id("login").style.display = "block";
-		};
-		r.addSurface(new svGlobal.LocalInterface());
-	}
-	
-	r.onerror = function(e){
-		console.log(e.name + ":" + e.message);
-	};
-
-	r.run();
-	
-	
-	
-	return false;
-};
-
-function serverListCallback(hasNew, connected){
-	if (!connected){
-		alert("Failed to connect to gateway for synchronization.");
-		return;
-	};
-	
-	if (!hasNew) return;
-	loadServers();
-	alert("Synchronization finished! new computers added to the list.");
-}
-
-</script>
-
 	<div id="login">
 		<h2>Cloud Login</h2>
-		<form id="frmConn" onsubmit="hideHeader(); connectRDP(); return false;">
+		<form id="frmConn" onsubmit="hideHeader(); return connectRDP()">
             <div>
                 <input type="hidden" name="id" />
                 <label>Select your cloud:</label>
@@ -679,9 +354,6 @@ function serverListCallback(hasNew, connected){
 					<div class="tab-pane" id="advanced">
 						<table>
 							<tr>
-								<td>Choose your connection speed to optimize performance.</td>
-							</tr>
-							<tr>
 								<td>Allow the following:</td>
 							</tr>
 							<tr>
@@ -712,7 +384,10 @@ function serverListCallback(hasNew, connected){
 									bitmap caching</td>
 							</tr>
 							<tr>
-							<td>Load Banlancing:&nbsp;<input type="text" name="loadBalanceInfo" /></td>
+							<td><input type="checkbox" name="remotefx" id="rfxOpt" /><b>RemoteFX(32 bit color and lan only)</b></td>
+							</tr>
+							<tr>
+							<td>Load Balancing:&nbsp;<input type="text" name="loadBalanceInfo" /></td>
 							</tr>
 							<tr>
 							<td>Hyper-V VM ID:<input type="text" name="vmid" />Connecting to Hyper-V console, default listening port of Hyper-V console is 2179</td>
@@ -751,6 +426,339 @@ function serverListCallback(hasNew, connected){
 		<span>F1</span><span>&larr;</span><span>&uarr;</span><span>&rarr;</span><span>&darr;</span><span>Start</span><span>Alt+F4</span><span>Ctrl+Alt+Del</span>
 	 </div>
 	</div>
+	
+<script type="text/javascript">
+hi5.init.start();
+
+window.$id = function (id){
+	return document.getElementById(id);
+};
+
+function checkBrowser(){
+	var hasCanvas = false;
+	var msg = "";
+	try { 
+		document.createElement("canvas").getContext("2d");
+		hasCanvas = true;
+	} catch (e) {
+		msg = "This browser does not support Canvas.\n\n";
+	};
+	
+	
+	var noWebSocket = !("WebSocket" in window) && !("MozWebSocket" in window);
+	var userAgent = navigator.userAgent;
+	var isFirefox = userAgent.indexOf("Firefox") != -1;
+		
+	if (noWebSocket){
+		msg += "This browser doesn't support WebSocket.\n\n";
+		if (isFirefox){
+			msg += "Please update to Firefox 6 or later.\n\n";
+		}
+		else if (userAgent.indexOf("Opera") != -1){
+			msg += "Please open 'opera:config#Enable WebSockets' (type it in the link field) make 'Enable WebSockets' selected and restart Opera.\n\n";
+		}
+		else if (userAgent.indexOf("MSIE") != -1){
+			msg += "Please install Google Chrome Frame.\n\n";
+		}
+	}
+	
+	if (msg.length > 0)
+		alert(msg);
+	
+	var ready = !noWebSocket && hasCanvas;
+	
+	return ready;
+};
+
+function initTimezone(){
+	var off = new Date().getStdTimezoneOffset()
+	var h = (off / 60) >> 0;
+	var zone, m = off - h * 60;
+	
+	if (h == 0){
+		zone = "(GMT)";
+	}else{
+		zone = (h < 0) ? "(GMT+" : "(GMT-";
+		h = Math.abs(h);
+		if (h < 10){
+			zone += "0";
+		}
+		zone += (h + ":" + m);
+	}
+	var tzSelect = $id("timezone");
+	var ops = tzSelect.options;
+	h = ops.length;
+	for (var i = 0; i < h; i++){
+		if (ops[i].text.indexOf(zone) == 0){
+			tzSelect.selectedIndex = i;
+			break;
+		}
+	}
+}
+
+function initUI(){
+	checkBrowser();
+	if (hi5.browser.isTouch){
+		$id("touchrow").style.display = "table-row";
+	}
+	svGlobal.util.initDragDrop($id("dropZone"), $id("frmConn"));
+	useFullBrowser();
+	initTimezone();
+	initServers();
+	var info = $id("joinSelect");
+	if (info){
+		info.onchange = function(e){
+			svManager.getInstance().setJoinMode(e.target.value);
+		};
+	}
+	
+	var control =$id("requestControl");
+	if (control){
+		control.onclick = function(e){
+			svManager.getInstance().requestControl();
+		};
+	}
+	
+	var remotefx = $id("rfxOpt");
+	if (remotefx){
+		remotefx.onchange = function(e){
+			if (e.target.checked){
+				$id("colorOpt").selectedIndex = 3;//32 bit color
+			}
+		};
+	}
+}
+	
+window.addEventListener('load', initUI, false);
+
+function initServers(){
+	var gw = $id("gateway"); 
+	var h = gw.value;
+	if (!h){
+		h = hi5.tool.queryToObj().gateway;//gateway value in the url
+		if (!h){
+			h = '10.1.100.133';
+			if (!h) h = "localhost";
+		}
+		gw.value = h;
+        console.log('gw.value: '+ gw.value);
+	}
+
+	var server = $id("server");
+	
+	var save = $id("save");
+	var clear = $id("clear");
+	var remove = $id("delete");
+	
+	if (!Connection.hasStorage){
+		save.style.visibility="hidden";
+		clear.style.visibility="hidden";
+		remove.style.visibility="hidden";
+		return;
+	}
+	
+	loadServers().onchange = function(){
+		var key = server.value;
+		Connection.loadToForm($id("frmConn"), key);
+	};
+	
+	save.onclick = function(){
+		if (server.value.length < 1){
+			alert("Please enter computer name.");
+			return null;
+		}
+
+		var key =Connection.saveForm($id("frmConn"));
+		loadServers();
+	};
+
+	clear.onclick = function(){
+		if (confirm("All saved data will be removed?")){
+			Connection.clear();
+			loadServers();
+			server.value = "";
+		}
+	};
+	
+	remove.onclick = function(){
+		var key = $id("server").value;
+		if (key.length < 1){
+			alert("Please select a computer first.");
+			return;
+		}
+		Connection.remove(key);
+		loadServers();
+		server.value = "";
+	}
+	
+	//syncronize computers with gateway, remove following two lines and serverListCallback if you don't want to do so.
+	var addr = (("https:" == location.protocol) ?  "wss://" : "ws://") + gw.value + "/LIST";
+    console.log('addr:' + addr);
+	getServers(addr, serverListCallback);
+    console.log('addr:' + addr);
+
+}
+
+function loadServers(){
+	var svrs = Connection.getAll();
+	var srvs = $id("server");
+	var ops = $id("server").options;
+	ops.length = 0;
+	for (var i = 0, l = svrs.length; i < l; i++){
+		ops[i] = new Option(svrs[i]);		
+	}
+	return srvs;	
+}
+
+function useFullScreen(){
+	$id("width").value = screen.width;
+	$id("height").value = screen.height;
+};
+
+function useFullBrowser(){
+	$id("width").value = window.innerWidth;
+	$id("height").value = window.innerHeight;
+};
+
+function registerRdp(){
+	if ("registerProtocolHandler" in navigator){
+		navigator.registerProtocolHandler("web+rdp", location.protocol +"//" + location.host + "/rdpdirect.html?%s", "Spark View");
+	}
+	else{
+		alert("Sorry, your browser doesn't support this.");
+	}
+}
+
+function connectRDP(){
+	$id("server").hide();
+	var frms = $id("frmConn").elements;
+	var l = frms.length;
+	var s = "";
+	var gw = '10.1.100.133';
+	var w = window.innerWidth, h = window.innerHeight, server_bpp = 16;
+	for (var i = 0; i < l; i++){
+		var field = frms[i];
+		if ((field.type=="radio" || field.type=="checkbox") && !field.checked) continue;
+		var v = field.value;
+		if (v == "")continue;
+		var n = field.name;
+		if (n == "gateway"){
+			gw = v;
+			continue;
+		}
+		else if (n == "width"){
+			w = v;
+			continue;
+		}
+		else if (n == "height"){
+			h = v;
+			continue;
+		}
+		else if (n == "server_bpp"){
+			server_bpp = v;
+			continue;
+		}
+		
+		if (s != "") s += "&";
+		s += (n + "=" + encodeURIComponent(v));
+	}
+	
+	var protocol = ("https:" == location.protocol) ? "wss://" : "ws://";
+	var frmConn = $id("frmConn");
+	var r = svManager.getInstance(); 
+	if (r == null){
+        console.log('gw'+ gw);
+		r = new svGlobal.Rdp(protocol + gw + "/RDP?" + s, w, h, server_bpp);
+	}else{
+		var apps = r.getRunninApps();
+		var len = apps.length;
+		var isApp = $id("app").checked;
+		var warn = r.isRemoteApp() && (!isApp); 
+		if (warn){
+			var s = "Warning: A RemoteApp session is still active.\n\n";
+			for (var i = 0; i < len; i++){
+				s += apps[i] + "\n";
+			}
+			s += "\nPlease open a new Window for new sessions.\n";
+			alert(s);
+			return;
+		}
+	}
+	
+	var newWin = r.isRemoteApp() && svGlobal.isMultitask;//open in new window
+	if (newWin){
+		function onSurfaceReady(surface){
+			r.addSurface(surface);
+			console.log("remoteApp: " + frmConn["exe"].value + " arg=" + frmConn["args"].value);
+			if (r.running())
+				r.startApp(frmConn["exe"].value, frmConn["args"].value, "");
+		};
+		window.svOnSurfaceReady = onSurfaceReady;
+		var rail = window.open("rail.html");
+		rail.svOnSurfaceReady = onSurfaceReady;
+	}else{
+		$id("login").style.display = "none";
+		r.onclose = function(){
+			r.hide();
+			$id("login").style.display = "block";
+		};
+		r.addSurface(new svGlobal.LocalInterface());
+	}
+	
+	r.onerror = function(e){
+		console.log(e.name + ":" + e.message);
+	};
+
+	r.run();
+	
+	
+	
+	return false;
+};
+
+function serverListCallback(hasNew, connected){
+	if (!connected){
+		alert("Failed to connect to gateway for synchronization.");
+		return;
+	};
+	
+	if (!hasNew) return;
+	loadServers();
+	alert("Synchronization finished! new computers added to the list.");
+}
+
+</script>
+
+<tal:block  tal:define="navroot context/@@plone_portal_state/navigation_root_url">
+    <script tal:attributes="src string:${navroot}/++resource++collective.remotespark/resource.js"></script>
+    <script tal:attributes="src string:${navroot}/++resource++collective.remotespark/surface_min.js"></script>
+    <script tal:attributes="src string:${navroot}/++resource++collective.remotespark/rdp_min.js"></script>
+</tal:block>
+	
+<script type="text/javascript">
+
+<!-- Hide the navbar unless mouse enters the personal bar. -->
+var hideHeader = function () {
+    $('.navbar-fixed-top').css({position:'absolute'});
+    $('#personal-bar').css({position:'absolute'});
+    $('#header').css({top:-60,position:'fixed',width:'100%'});
+    $('#header').bind('mouseenter', function () {
+        $(this)
+            .css({top:-60,position:'fixed'})
+            .animate({top:0})
+        $("#wsinput").hide();
+    });
+
+    $('#header').bind('mouseleave', function () {
+        $(this)
+            .css({top:0,position:'fixed'})
+            .animate({top:-60});
+        $('#wsinput').show();
+    });
+};
+
+</script>
+
 
         </tal:main-macro>
     </div>
