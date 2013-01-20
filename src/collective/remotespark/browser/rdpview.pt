@@ -591,7 +591,8 @@ function initServers(){
 		server.value = "";
 	}
 	
-	//syncronize computers with gateway, remove following two lines and serverListCallback if you don't want to do so.
+    //syncronize computers with gateway, 
+    //remove following two lines and serverListCallback if you dont want to do so.
 	var addr = (("https:" == location.protocol) ?  "wss://" : "ws://") + gw.value + "/LIST";
     console.log('addr:' + addr);
 	getServers(addr, serverListCallback);
@@ -617,7 +618,8 @@ function useFullScreen(){
 
 function useFullBrowser(){
 	$id("width").value = window.innerWidth;
-	$id("height").value = window.innerHeight;
+    // Make the canvas 20px shorter so the personalbar fits.
+	$id("height").value = window.innerHeight - 20;
 };
 
 function registerRdp(){
