@@ -1,4 +1,4 @@
-.toolbar{position:fixed;top:0;left:50%;z-index:89;width:150px;margin-left:-70px;outline:none}
+.toolbar{position:fixed;top:26px;right:0;z-index:89;outline:none}
 .toolbar img{margin-right:10px;cursor:pointer;opacity:0.6}
 .hi5_dialog{border:1px solid #222;padding:2em;border-radius:8px;background-color:white}
 
