@@ -400,26 +400,27 @@
 			<input type="button" name="clear" id = "clear" value="Clear" class="btn" data-dismiss="modal" aria-hidden="true"/>
 			<input type="button" name="clear" id = "delete" value="Delete" class="btn" aria-hidden="true"/>
 			<input type="button" name="save" id = "save" value="Save" data-dismiss="modal" class="btn btn-primary"/>
-                              </div>
+                </div>
 			</div>
 		</form>
+    </div>
 		
 	<!-- filecontainer is used for file share -->
 	<div id="filecontainer" style="overflow:auto;display:none; width:85%">
 	</div>
 	<div id="appinfo" class="appdlg">
-		<img alt="" src="info.png" style="float:left">	
-		<table>
-		<tr><td align="right"><b>Connected to:</b></td><td><span id="connectingTo"></span><br></td></tr>
-		<tr><td align="right"><b>Session id:</b></td><td><span id="numericId"></span><br></td></tr>
-		<tr><td align="right"><b>Join mode:</b></td><td>
-		<select id="joinSelect">
-			<option value="0">Every one can control</option>
-			<option value="1">Only one can control</option>
-		</select><br></td></tr>
-		<tr><td colspan="2"><b>Join this session with following link:</b><br><a id="joinLink" target="_blank"></a></td></tr>
-		<tr><td></td><td align="right"><input type="button" id="requestControl" value="Request Control" disabled="disabled" /></td></tr>
-		</table>
+        <img alt="" src="/++resource++collective.remotespark/info.png" style="float:left">	
+        <table>
+            <tr><td align="right"><b>Connected to:</b></td><td><span id="connectingTo"></span><br></td></tr>
+            <tr><td align="right"><b>Session id:</b></td><td><span id="numericId"></span><br></td></tr>
+            <tr><td align="right"><b>Join mode:</b></td><td>
+                    <select id="joinSelect">
+                        <option value="0">Every one can control</option>
+                        <option value="1">Only one can control</option>
+                    </select><br></td></tr>
+            <tr><td colspan="2"><b>Join this session with following link:</b><br><a id="joinLink" target="_blank"></a></td></tr>
+            <tr><td></td><td align="right"><input type="button" id="requestControl" value="Request Control" disabled="disabled" /></td></tr>
+        </table>
 	</div>
 	<div id="pc_key"><span>Ctrl</span><span>Alt</span><span>Del</span><span>Esc</span><span>...</span>
 	  <div id="pc_key_more">
