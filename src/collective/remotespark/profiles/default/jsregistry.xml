@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<object name="portal_javascripts">
+     <javascript id="formsubmithelpers.js" remove="True" />
+     <javascript id="++resource++collective.remotespark/formsubmithelpers.js" 
+                 authenticated="True" />
+</object>
