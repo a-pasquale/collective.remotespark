@@ -489,9 +489,12 @@ function connected() {
     // If the rdp input area exists, display it.
     if ($("#wsinput").length>0) {
         $("#sparkview").fadeIn("slow");
+        // Hide the live chat box.
+        olark('api.box.hide');
     } else {
         //  Otherwise, display the login box.
         $("#login_connect").fadeIn("slow");
+        olark('api.box.show');
     }
 }
 
