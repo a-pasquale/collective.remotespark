@@ -512,7 +512,7 @@ function disconnected() {
 
 // Check connectivity to the VPN every 11 seconds.
 (function pingServer() {
-    var src = "http://10.1.100.133/1x1.gif/?cachebreaker="+new Date().getTime();
+    var src = "https://10.1.100.133/1x1.gif/?cachebreaker="+new Date().getTime();
     loadImage(src);
     setTimeout(pingServer, 11000);
 })();
