@@ -52,29 +52,25 @@
 
     <!-- following is for login dialog only -->
 	<div id="login">
-		<form id="frmConn" onsubmit="hideHeader(); return connectRDP();" class="form-horizontal">
+		<form id="frmConn" onsubmit="hideHeader(); return connectRDP();" role="form">
 		<h2>Cloud Login</h2>
         <div id="login_ping">
             <div class="circle"></div>
             <div class="circle1"></div>
-            <div class="msg">Checking for a secure connection...</div>
+            <div class="msg"><p>Checking for a secure connection...</p><p>If you are logging in from outside the office, please connect to the VPN.</p></div>
         </div>
         <div id="login_connect">
             <div id="locked">
                 <img src="/++resource++collective.remotespark/lock.png" 
                      width="64"/>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="user">User Name</label>
-                <div class="controls">
-                    <input type="text" name="user" id="user" autofocus/>
-                </div>
+            <div class="form-group">
+                <label for="user">Username</label>
+                <input type="text" class="form-control" name="user" id="user" autofocus/>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="pwd">Password</label>
-                <div class="controls">
-			        <input type="password" name="pwd" />
-                </div>
+            <div class="form-group">
+                <label for="pwd">Password</label>
+                <input class="form-control" type="password" name="pwd" />
             </div>
             <input type="hidden" name="id" />
             <input type="hidden" name="server" id="server" value="AZURE"/>
@@ -428,17 +424,17 @@ function expandHeader() {
 };
 
 function shrinkHeader() {
-    if ($("#header").css("top") == "-60px") { return; } 
+    if ($("#header").css("top") == "-50px") { return; } 
     $(this)
         .css({top:0})
-        .animate({top:-60});
+        .animate({top:-50});
     $('#wsinput').show();
 };
 
 <!-- Hide the navbar unless mouse enters the personal bar. -->
 function hideHeader() {
     $('.navbar-fixed-top').css({position:'absolute'});
-    $('#header').css({top:-60,position:'fixed',width:'100%'});
+    $('#header').css({top:-50,position:'fixed',width:'100%'});
     $('#header').hoverIntent(expandHeader, shrinkHeader);
 };
 

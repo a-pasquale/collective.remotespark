@@ -1,3 +1,7 @@
+.section-connect #content {
+    margin: 0;
+}
+
 #login {
     width: 350px;
     margin: 200px auto 0;
@@ -8,37 +12,17 @@
     box-shadow: 0px 0px 10px rgba(0,0,0,.9); 
     text-align: center;
 }
-/*
-#login input[name="server"] {
-    display: inline;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    width: 150px;
-    margin-top:4px;
+
+#login form {
+    margin-bottom: 20px;
 }
 
-#login .nav-tabs li {
-    display: inline;
-    margin-bottom: -1px;
-}
-
-#login .nav-tabs {
-    margin-left: 0;
-    padding-left: 15px;
-}
-#login .nav-tabs li a {
-    display: block;
-    border-bottom: 0;
-}
-#login img {
-    border:0;
-}
-*/
 #login label { 
     display: inline;
 }
 #login input {
     width: 9em;
+    margin: 0 auto;
 }
 #login input[name="connect"] {
     width: 7em;
@@ -50,6 +34,10 @@
 
 #locked {
     position: absolute;
+}
+
+#login_ping {
+    padding-top: 10px;
 }
 
 #login_connect {
@@ -85,7 +73,7 @@
     height:30px;
     margin:0 auto;
     position:relative;
-    top:-50px;
+    top:-40px;
     -moz-animation:spinoffPulse 1s infinite linear;
     -webkit-animation:spinoffPulse 1s infinite linear;
 }
